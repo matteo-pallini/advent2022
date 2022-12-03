@@ -13,7 +13,7 @@ pub fn run() -> Option<u8> {
             if heap.len() <= 3 {
                 heap.push(current_value)
             } else {
-                let unused: u32 = heap.push_pop_min(current_value);
+                heap.push_pop_min(current_value);
             }
             current_value = 0
         } else {
