@@ -5,9 +5,7 @@ use std::io::{BufRead, BufReader};
 pub fn run() -> Option<u8> {
     let mut current_value: u32 = 0;
     let mut heap = MinMaxHeap::with_capacity(3);
-
-    let input = File::open("src/day01.txt").expect("file not found");
-    let buffered = BufReader::new(input);
+    let buffered = BufReader::new(File::open("src/day01.txt").ok()?);
     for line in buffered.lines() {
         if line.as_ref().unwrap().is_empty() {
             if heap.len() <= 3 {
