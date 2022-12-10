@@ -12,13 +12,12 @@ pub fn run() -> Option<u8> {
     let mut points1: u32 = 0;
     let mut points2: u32 = 0;
     for line in buffered.lines() {
-        let elements: Vec<&str> = line.as_ref().unwrap().split(" ").collect();
+        let elements: Vec<&str> = line.as_ref().unwrap().split(' ').collect();
         let first: &str = conversion_map.get(&elements[0])?;
-        points1 = points1 + get_score_part1(&first, &elements[1], &winners_map, &choice_points);
-        points2 = points2
-            + get_score_part2(
-                &first,
-                &elements[1],
+        points1 += get_score_part1(first, elements[1], &winners_map, &choice_points);
+        points2 += get_score_part2(
+                first,
+                elements[1],
                 &losers_map,
                 &winners_map,
                 &choice_points,

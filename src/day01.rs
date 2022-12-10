@@ -15,14 +15,14 @@ pub fn run() -> Option<u8> {
             }
             current_value = 0
         } else {
-            current_value = current_value + line.expect("no line").parse::<u32>().unwrap()
+            current_value += line.expect("no line").parse::<u32>().unwrap()
         }
     }
 
     let mut max_value: u32 = heap.pop_max().unwrap_or(0);
     println!("day1, max value is {}", max_value);
-    max_value = max_value + heap.pop_max().unwrap_or(0);
-    max_value = max_value + heap.pop_max().unwrap_or(0);
+    max_value += heap.pop_max().unwrap_or(0);
+    max_value += heap.pop_max().unwrap_or(0);
     println!("day1, max 3 values are {}", max_value);
     None
 }
