@@ -16,12 +16,12 @@ pub fn run() -> Option<u8> {
         let first: &str = conversion_map.get(&elements[0])?;
         points1 += get_score_part1(first, elements[1], &winners_map, &choice_points);
         points2 += get_score_part2(
-                first,
-                elements[1],
-                &losers_map,
-                &winners_map,
-                &choice_points,
-            );
+            first,
+            elements[1],
+            &losers_map,
+            &winners_map,
+            &choice_points,
+        );
     }
     println!("day2 step 1 points {}", points1);
     println!("day2 step 2 points {}", points2);

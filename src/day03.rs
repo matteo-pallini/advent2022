@@ -1,82 +1,47 @@
 use std::collections::HashSet;
 use std::fs::File;
-use std::io::{BufRead, BufReader};
+use std::io::{BufRead, BufReader, Result};
+use std::iter::FromIterator;
 
 pub fn run() -> Option<u8> {
-    let mut score1: u32 = 0;
-    let mut score2: u32 = 0;
-
     let buffered = BufReader::new(File::open("src/day03.txt").expect("file not found"));
-    let previous_set: HashSet<char> = HashSet::new();
-    for (line_i, line) in buffered.lines().enumerate() {
-        let mut seen: HashSet<char>;
-        let length: usize = line.as_ref().unwrap().chars().count();
-        for (i, c) in line.as_ref().unwrap().chars().enumerate() {
-            // problem 1
-            if i < length / 2 {
-                seen.insert(c);
-            } else if seen.contains(&c) {
-                score1 += convert_char_to_score(Some(&c));
-                break;
-            }
-        }
-
-        // problem 2
-        let foo: String = previous_set.iter().collect();
-        println!("\n prex state {} {}", line_i, foo);
-        let previous_set: HashSet<char> = if line_i % 3 == 0 {
-            let foo: String = previous_set.iter().collect();
-            println!("first pre {} {}", line_i, foo);
-            score2 = score2 + convert_char_to_score(previous_set.iter().nth(0));
-            let previous_set: HashSet<char> = line.as_ref().unwrap().chars().collect();
-            let foo: String = previous_set.iter().collect();
-            println!("first post {} {}", line_i, foo);
-            previous_set
-        } else {
-            let previous_set: HashSet<char> = previous_set;
-            let foo: String = previous_set.iter().collect();
-            println!("check {} {}", line_i, foo);
-            let previous_set: HashSet<char> = line
-                .as_ref()
-                .unwrap()
-                .chars()
-                .filter(|c| previous_set.contains(c))
-                .collect();
-            previous_set
-        };
-        let foo: String = previous_set.iter().collect();
-        println!("outside, {}", foo);
-        // if line_i % 3 == 2 {
-        //     let foo: String = previous_set.iter().collect();
-        //     println!("{} {}", line_i, foo);
-        //     //score2 = score2 + convert_char_to_score(previous_set.iter().nth(0).unwrap());
-        //     previous_set.clear();
-        // }
-    }
-    println!("day 3 step 1 score {}", score1);
-    println!("day 3 step 2 score {}", score2);
+    let lines: Result<Vec<String>> = buffered.lines().collect();
+    let lines: Vec<String> = lines.unwrap();
+    let (scores1, scores2): (Vec<u32>, Vec<u32>) = lines
+        .chunks(3)
+        .map(|chunk| (problem1(chunk), problem2(chunk)))
+        .unzip();
+    let score1: u32 = scores1.iter().sum();
+    let score2: u32 = scores2.iter().sum();
+    println!("day3 - step 1 {}", score1);
+    println!("day3 - step 2 {}", score2);
     None
 }
 
-// fn problem2(line: Line, previous_set: HashSet<char>, score: u32) -> u32 {
-//     if line_i % 3 == 0 {
-//         let foo: String = previous_set.iter().collect();
-//         println!("first pre {} {}", line_i, foo);
-//         score2 = score2 + convert_char_to_score(previous_set.iter().nth(0));
-//         let previous_set: HashSet<char> = line.as_ref().unwrap().chars().collect();
-//         let foo: String = previous_set.iter().collect();
-//         println!("first post {} {}", line_i, foo);
-//     } else {
-//         let foo: String = previous_set.iter().collect();
-//         println!("check {} {}", line_i, foo);
-//         let previous_set: HashSet<char> = line
-//             .as_ref()
-//             .unwrap()
-//             .chars()
-//             .filter(|c| previous_set.contains(c))
-//             .collect();
-//     }
-// }
+fn problem1(lines: &[String]) -> u32 {
+    let mut score: u32 = 0;
+    for line in lines.iter() {
+        let mut seen = HashSet::new();
+        let length: usize = line.chars().count();
+        for (i, c) in line.chars().enumerate() {
+            if i < length / 2 {
+                seen.insert(c);
+            } else if seen.contains(&c) {
+                score += convert_char_to_score(Some(&c));
+                break;
+            }
+        }
+    }
+    score
+}
+
+fn problem2(lines: &[String]) -> u32 {
+    let first_set: HashSet<char> = lines[0].chars().collect();
+    let shared_char: HashSet<char> = lines.iter().fold(first_set, |acc, line| {
+        HashSet::from_iter(line.chars().filter(|e| acc.contains(e)))
+    });
+    convert_char_to_score(shared_char.iter().next())
+}
 
 #[inline]
 fn convert_char_to_score(character: Option<&char>) -> u32 {
