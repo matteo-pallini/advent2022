@@ -1,13 +1,12 @@
+use crate::utils::lines_from_file;
 use min_max_heap::MinMaxHeap;
-use std::fs::File;
-use std::io::{BufRead, BufReader};
 
 pub fn run() -> Option<u8> {
     let mut current_value: u32 = 0;
     let mut heap = MinMaxHeap::with_capacity(3);
-    let buffered = BufReader::new(File::open("src/day01.txt").ok()?);
-    for line in buffered.lines() {
-        if line.as_ref().unwrap().is_empty() {
+    let lines: Vec<String> = lines_from_file("src/day01.txt");
+    for line in lines {
+        if line.is_empty() {
             if heap.len() <= 3 {
                 heap.push(current_value)
             } else {
@@ -15,7 +14,7 @@ pub fn run() -> Option<u8> {
             }
             current_value = 0
         } else {
-            current_value += line.expect("no line").parse::<u32>().unwrap()
+            current_value += line.parse::<u32>().unwrap()
         }
     }
 

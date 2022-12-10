@@ -1,12 +1,9 @@
+use crate::utils::lines_from_file;
 use std::collections::HashSet;
-use std::fs::File;
-use std::io::{BufRead, BufReader, Result};
 use std::iter::FromIterator;
 
 pub fn run() -> Option<u8> {
-    let buffered = BufReader::new(File::open("src/day03.txt").expect("file not found"));
-    let lines: Result<Vec<String>> = buffered.lines().collect();
-    let lines: Vec<String> = lines.unwrap();
+    let lines: Vec<String> = lines_from_file("src/day03.txt");
     let (scores1, scores2): (Vec<u32>, Vec<u32>) = lines
         .chunks(3)
         .map(|chunk| (problem1(chunk), problem2(chunk)))

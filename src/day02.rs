@@ -1,6 +1,5 @@
+use crate::utils::lines_from_file;
 use std::collections::HashMap;
-use std::fs::File;
-use std::io::{BufRead, BufReader};
 
 pub fn run() -> Option<u8> {
     let conversion_map = HashMap::from([("A", "X"), ("B", "Y"), ("C", "Z")]);
@@ -8,11 +7,11 @@ pub fn run() -> Option<u8> {
     let losers_map: HashMap<&str, &str> = winners_map.iter().map(|(k, v)| (*v, *k)).collect();
     let choice_points = HashMap::from([("X", 1), ("Y", 2), ("Z", 3)]);
 
-    let buffered = BufReader::new(File::open("src/day02.txt").expect("file not found"));
+    let lines: Vec<String> = lines_from_file("src/day02.txt");
     let mut points1: u32 = 0;
     let mut points2: u32 = 0;
-    for line in buffered.lines() {
-        let elements: Vec<&str> = line.as_ref().unwrap().split(' ').collect();
+    for line in lines {
+        let elements: Vec<&str> = line.split(' ').collect();
         let first: &str = conversion_map.get(&elements[0])?;
         points1 += get_score_part1(first, elements[1], &winners_map, &choice_points);
         points2 += get_score_part2(
