@@ -14,6 +14,7 @@ pub fn run() -> Option<u8> {
         (8, vec!["w", "q", "r", "j", "f", "v", "c", "z"]),
         (9, vec!["r", "p", "m", "l", "h"]),
     ]);
+    let mut crates_reverse = crates.clone();
 
     let crates_ids: Vec<[u8; 3]> = lines_from_file("src/day05.txt")
         .iter()
@@ -27,24 +28,39 @@ pub fn run() -> Option<u8> {
                 .unwrap()
         })
         .collect();
+
     for &indexes in crates_ids.iter() {
         let (shift_size, origin_id, destination_id): (u8, u8, u8) =
             (indexes[0], indexes[1], indexes[2]);
+        let start_point_reverse: usize =
+            crates_reverse[&origin_id].len() - usize::try_from(shift_size).unwrap();
+        let mut to_be_shifted_reverse: Vec<&str> = crates_reverse
+            .get_mut(&origin_id)
+            .unwrap()
+            .drain(start_point_reverse..)
+            .collect();
+        to_be_shifted_reverse.reverse();
+        crates_reverse
+            .entry(destination_id)
+            .and_modify(|vector| vector.append(&mut to_be_shifted_reverse));
+
         let start_point: usize = crates[&origin_id].len() - usize::try_from(shift_size).unwrap();
         let mut to_be_shifted: Vec<&str> = crates
             .get_mut(&origin_id)
             .unwrap()
             .drain(start_point..)
             .collect();
-        to_be_shifted.reverse();
         crates
             .entry(destination_id)
             .and_modify(|vector| vector.append(&mut to_be_shifted));
     }
+    let mut chars_reverse: String = String::new();
     let mut chars: String = String::new();
     for key in 1..10 {
+        chars_reverse.push_str(*crates_reverse.get(&key).unwrap().last().unwrap());
         chars.push_str(*crates.get(&key).unwrap().last().unwrap());
     }
-    println!("day5 - step 1 {}", chars);
+    println!("day5 - step 1 {}", chars_reverse);
+    println!("day5 - step 2 {}", chars);
     None
 }
