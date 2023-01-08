@@ -7,7 +7,7 @@ pub fn run() -> Option<u8> {
     let losers_map: HashMap<&str, &str> = winners_map.iter().map(|(k, v)| (*v, *k)).collect();
     let choice_points = HashMap::from([("X", 1), ("Y", 2), ("Z", 3)]);
 
-    let lines: Vec<String> = lines_from_file("src/day02.txt");
+    let lines: Vec<String> = lines_from_file("data/day02.txt");
     let mut points1: u32 = 0;
     let mut points2: u32 = 0;
     for line in lines {

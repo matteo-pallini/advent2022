@@ -3,7 +3,7 @@ use std::collections::HashSet;
 use std::iter::FromIterator;
 
 pub fn run() -> Option<u8> {
-    let lines: Vec<String> = lines_from_file("src/day03.txt");
+    let lines: Vec<String> = lines_from_file("data/day03.txt");
     let (scores1, scores2): (Vec<u32>, Vec<u32>) = lines
         .chunks(3)
         .map(|chunk| (problem1(chunk), problem2(chunk)))

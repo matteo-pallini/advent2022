@@ -16,7 +16,7 @@ pub fn run() -> Option<u8> {
     ]);
     let crates_reverse = crates.clone();
 
-    let crates_ids: Vec<[u8; 3]> = lines_from_file("src/day05.txt")
+    let crates_ids: Vec<[u8; 3]> = lines_from_file("data/day05.txt")
         .iter()
         .map(|line| {
             line.split_whitespace()

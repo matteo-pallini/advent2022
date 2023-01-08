@@ -1,7 +1,7 @@
 use crate::utils::lines_from_file;
 
 pub fn run() -> Option<u8> {
-    let lines: Vec<String> = lines_from_file("src/day04.txt");
+    let lines: Vec<String> = lines_from_file("data/day04.txt");
     let items_contained: Vec<&String> = lines
         .iter()
         .filter(|line| is_any_interval_contained(*line))

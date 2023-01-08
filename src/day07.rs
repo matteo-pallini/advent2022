@@ -1,7 +1,7 @@
 use crate::utils::lines_from_file;
 
 pub fn run() -> Option<u8> {
-    let logs: Vec<String> = lines_from_file("src/day07.txt");
+    let logs: Vec<String> = lines_from_file("data/day07.txt");
     let mut sizes_stack: Vec<i32> = vec![];
     let mut current_size: i32 = 0;
     let mut total_size: i32 = 0;

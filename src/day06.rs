@@ -3,7 +3,7 @@ use std::collections::HashMap;
 use crate::utils::lines_from_file;
 
 pub fn run() -> Option<u8> {
-    let message_chars: Vec<char> = lines_from_file("src/day06.txt")
+    let message_chars: Vec<char> = lines_from_file("data/day06.txt")
         .first()
         .unwrap()
         .chars()

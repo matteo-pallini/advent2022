@@ -4,7 +4,7 @@ use min_max_heap::MinMaxHeap;
 pub fn run() -> Option<u8> {
     let mut current_value: u32 = 0;
     let mut heap = MinMaxHeap::with_capacity(3);
-    let lines: Vec<String> = lines_from_file("src/day01.txt");
+    let lines: Vec<String> = lines_from_file("data/day01.txt");
     for line in lines {
         if line.is_empty() {
             if heap.len() <= 3 {
