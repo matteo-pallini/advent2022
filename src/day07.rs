@@ -28,13 +28,13 @@ pub fn run() -> Option<u8> {
     }
     *sizes_stack.last_mut().unwrap() += current_size;
     directories_sizes.push(current_size);
-    println!("problem 7 - step 1 {}", total_size);
+    println!("day 7 - step 1 {}", total_size);
 
     let space_to_free: i32 = 30000000 - (70000000 - space_taken);
     directories_sizes.sort();
     for size in directories_sizes {
         if size > space_to_free {
-            println!("problem 7 - step 2 {}", size);
+            println!("day 7 - step 2 {}", size);
             break;
         }
     }

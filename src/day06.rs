@@ -28,6 +28,6 @@ pub fn run() -> Option<u8> {
         *counter.entry(message_chars[second_pointer]).or_insert(0) += 1;
         second_pointer += 1;
     }
-    println!("problem 6 - step 1 {}", second_pointer);
+    println!("day 6 - step 1 {}", second_pointer);
     None
 }
