@@ -8,40 +8,37 @@ pub fn run() -> Option<u8> {
         .map(|row| row.chars().map(|v| v.to_digit(10).unwrap() as u8).collect())
         .collect();
     let row_length: usize = forest.first().unwrap().len();
-    let mut forest_min_horiz: Vec<Vec<u8>> = vec![vec![0; row_length]; forest.len()];
-
+    let forest_min_horiz = get_forest_min(&forest);
+    let mut forest_inverted: Vec<Vec<u8>> = vec![vec![0; forest.len()]; row_length];
     for r_idx in 0..forest.len() {
         for c_idx in 0..row_length {
-            if (c_idx == 0) | (r_idx == 0) | (c_idx == row_length - 1) | (r_idx == forest.len() - 1)
-            {
-                forest_min_horiz[r_idx][c_idx] = 0;
-            } else {
-                let inverted_c_idx = row_length - 1 - c_idx;
-                let inverted_r_idx = forest.len() - 1 - r_idx;
-                forest_min_horiz[r_idx][c_idx] =
-                    get_min_value_for_point(r_idx, c_idx, &forest, &forest_min_horiz);
-                forest_min_horiz[r_idx][inverted_c_idx] =
-                    get_min_value_for_point(r_idx, inverted_c_idx, &forest, &forest_min_horiz);
-                forest_min_horiz[inverted_r_idx][c_idx] =
-                    get_min_value_for_point(inverted_r_idx, c_idx, &forest, &forest_min_horiz);
-                forest_min_horiz[inverted_r_idx][inverted_c_idx] = get_min_value_for_point(
-                    inverted_r_idx,
-                    inverted_c_idx,
-                    &forest,
-                    &forest_min_horiz,
-                );
-            }
+            forest_inverted[c_idx][r_idx] = forest[r_idx][c_idx]
         }
     }
+    let forest_min_vert = get_forest_min(&forest_inverted);
 
     let mut counter = 0;
     for r_idx in 0..forest.len() {
         for c_idx in 0..row_length {
             println!(
-                "{} {} {} {}",
-                r_idx, c_idx, forest[r_idx][c_idx], forest_min_horiz[r_idx][c_idx]
+                "{} {} {} {} {}",
+                r_idx,
+                c_idx,
+                forest[r_idx][c_idx],
+                forest_min_horiz[r_idx][c_idx],
+                forest_min_vert[r_idx][c_idx]
             );
-            if forest[r_idx][c_idx] > forest_min_horiz[r_idx][c_idx] {
+            if (forest[r_idx][c_idx]
+                > cmp::min(
+                    forest_min_horiz[r_idx][c_idx],
+                    forest_min_vert[r_idx][c_idx],
+                ))
+                | (c_idx == 0)
+                | (c_idx == row_length - 1)
+                | (r_idx == 0)
+                | (r_idx == forest.len() - 1)
+            {
+                eprintln!("+1");
                 counter += 1
             }
         }
@@ -51,22 +48,29 @@ pub fn run() -> Option<u8> {
     None
 }
 
-fn get_min_value_for_point(
-    r_idx: usize,
-    c_idx: usize,
-    forest: &Vec<Vec<u8>>,
-    forest_min: &Vec<Vec<u8>>,
-) -> u8 {
-    cmp::max(
-        *vec![
-            forest[r_idx - 1][c_idx],
-            forest[r_idx][c_idx - 1],
-            forest[r_idx + 1][c_idx],
-            forest[r_idx][c_idx + 1],
-        ]
-        .iter()
-        .min()
-        .unwrap(),
-        forest_min[r_idx][c_idx],
-    )
+fn get_forest_min(forest: &Vec<Vec<u8>>) -> Vec<Vec<u8>> {
+    let row_length: usize = forest.first().unwrap().len();
+    let mut forest_min: Vec<Vec<u8>> = vec![vec![9; row_length]; forest.len()];
+
+    for r_idx in 0..forest.len() {
+        let mut left_to_right: Vec<u8> = vec![0; row_length];
+        let mut right_to_left: Vec<u8> = vec![0; row_length];
+
+        for c_idx in 0..row_length {
+            if (c_idx == 0) | (c_idx == row_length - 1) {
+                forest_min[r_idx][c_idx] = 0;
+            } else {
+                let inverted_c_idx = row_length - 1 - c_idx;
+                left_to_right[c_idx] = cmp::max(forest[r_idx][c_idx - 1], left_to_right[c_idx - 1]);
+                right_to_left[inverted_c_idx] = cmp::max(
+                    forest[r_idx][inverted_c_idx + 1],
+                    right_to_left[inverted_c_idx + 1],
+                );
+            }
+        }
+        for idx in 0..row_length {
+            forest_min[r_idx][idx] = cmp::min(left_to_right[idx], right_to_left[idx]);
+        }
+    }
+    forest_min
 }
