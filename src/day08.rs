@@ -9,25 +9,11 @@ pub fn run() -> Option<u8> {
         .collect();
     let row_length: usize = forest.first().unwrap().len();
     let forest_min_horiz = get_forest_min(&forest);
-    let mut forest_inverted: Vec<Vec<u8>> = vec![vec![0; forest.len()]; row_length];
-    for r_idx in 0..forest.len() {
-        for c_idx in 0..row_length {
-            forest_inverted[c_idx][r_idx] = forest[r_idx][c_idx]
-        }
-    }
-    let forest_min_vert = get_forest_min(&forest_inverted);
+    let forest_min_vert = invert_forest(&get_forest_min(&invert_forest(&forest)));
 
     let mut counter = 0;
     for r_idx in 0..forest.len() {
         for c_idx in 0..row_length {
-            println!(
-                "{} {} {} {} {}",
-                r_idx,
-                c_idx,
-                forest[r_idx][c_idx],
-                forest_min_horiz[r_idx][c_idx],
-                forest_min_vert[r_idx][c_idx]
-            );
             if (forest[r_idx][c_idx]
                 > cmp::min(
                     forest_min_horiz[r_idx][c_idx],
@@ -38,11 +24,9 @@ pub fn run() -> Option<u8> {
                 | (r_idx == 0)
                 | (r_idx == forest.len() - 1)
             {
-                eprintln!("+1");
                 counter += 1
             }
         }
-        println!("");
     }
     println!("day 8 - step 1: {}", counter);
     None
@@ -73,4 +57,15 @@ fn get_forest_min(forest: &Vec<Vec<u8>>) -> Vec<Vec<u8>> {
         }
     }
     forest_min
+}
+
+fn invert_forest(forest: &Vec<Vec<u8>>) -> Vec<Vec<u8>> {
+    let row_length: usize = forest.first().unwrap().len();
+    let mut forest_inverted: Vec<Vec<u8>> = vec![vec![0; forest.len()]; row_length];
+    for r_idx in 0..forest.len() {
+        for c_idx in 0..row_length {
+            forest_inverted[c_idx][r_idx] = forest[r_idx][c_idx]
+        }
+    }
+    forest_inverted
 }
